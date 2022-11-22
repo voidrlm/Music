@@ -45,7 +45,7 @@ export default {
       {
         title: "Playlists",
         icon: "mdi-music-box-multiple-outline",
-        route: "/playlist",
+        route: "/playlists",
       },
       {
         title: "Liked",
