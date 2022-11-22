@@ -11,11 +11,5 @@ const routes = [
     meta: { authorized: true },
     component: () => import("../views/dashboard.vue"),
   },
-  {
-    path: "/calendar",
-    name: "Calendar",
-    meta: { authorized: true },
-    component: () => import("../views/calendar.vue"),
-  },
 ];
 export default routes;
