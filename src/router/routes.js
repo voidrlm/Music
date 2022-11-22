@@ -6,10 +6,28 @@ const routes = [
     component: () => import("../views/userAuthentication.vue"),
   },
   {
-    path: "/dashboard",
-    name: "Dashboard",
+    path: "/home",
+    name: "Home",
     meta: { authorized: true },
-    component: () => import("../views/dashboard.vue"),
+    component: () => import("../views/home.vue"),
+  },
+  {
+    path: "/discover",
+    name: "Discover",
+    meta: { authorized: true },
+    component: () => import("../views/discover.vue"),
+  },
+  {
+    path: "/liked",
+    name: "Liked",
+    meta: { authorized: true },
+    component: () => import("../views/liked.vue"),
+  },
+  {
+    path: "/playlists",
+    name: "Playlists",
+    meta: { authorized: true },
+    component: () => import("../views/playlists.vue"),
   },
 ];
 export default routes;
