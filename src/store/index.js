@@ -7,10 +7,14 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
     currentUser: {},
+    playState: false,
   },
   mutations: {
     setCurrentUser(state, currentUser) {
       return (state.currentUser = currentUser);
+    },
+    setPlayPauseState(state, playState) {
+      return (state.playState = playState);
     },
   },
   actions: {
@@ -19,6 +23,9 @@ const store = new Vuex.Store({
       if (context.currentUser === currentUser) return;
       context.commit("setCurrentUser", currentUser);
     },
+    setPlayPauseState(context, playState) {
+      context.commit("setPlayPauseState", playState);
+    },
 
     resetState() {
       // context.dispatch("setCurrentUser", {});
@@ -26,6 +33,7 @@ const store = new Vuex.Store({
   },
   getters: {
     currentUser: (state) => state.currentUser,
+    playState: (state) => state.playState,
   },
 });
 

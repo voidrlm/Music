@@ -5,8 +5,53 @@
       app
       class="accent"
       width="245"
-    >
-      <v-list nav rounded class="mt-2 pa-5">
+      ><v-layout class="justify-center mb-7">
+        <v-hover>
+          <template v-slot:default="{ hover }">
+            <v-avatar size="200" class="ma-5 mb-n2 rounded-xl"
+              ><v-img
+                src="https://upload.wikimedia.org/wikipedia/en/1/13/Pop_Smoke_-_Meet_the_Woo_2.png"
+              >
+                <v-fade-transition>
+                  <v-overlay v-if="hover" absolute>
+                    <v-card-title class="mt-n6">Now Playing</v-card-title>
+                    <v-card-subtitle>Dior-Pop Smoke</v-card-subtitle>
+                    <div class="mt-1">
+                      <v-btn icon class="mr-3"
+                        ><v-icon size="35">mdi-skip-previous</v-icon></v-btn
+                      >
+                      <v-btn
+                        icon
+                        @click.prevent="
+                          playSound(
+                            'https://luvmp.com/wp-content/uploads/2021/09/Pop_Smoke_-_Dior_www.luvmp_.com_.mp3'
+                          )
+                        "
+                        ><v-icon size="55">{{
+                          $store.getters.playState
+                            ? "mdi-pause-circle"
+                            : "mdi-play-circle"
+                        }}</v-icon></v-btn
+                      >
+                      <v-btn icon class="ml-3"
+                        ><v-icon size="35">mdi-skip-next</v-icon></v-btn
+                      >
+                    </div>
+
+                    <v-progress-linear
+                      color="white"
+                      class="mt-8"
+                      :key="currentPosition"
+                      :value="currentPosition"
+                    ></v-progress-linear>
+                  </v-overlay>
+                </v-fade-transition> </v-img
+            ></v-avatar>
+          </template>
+        </v-hover>
+      </v-layout>
+      <v-divider class="mb-n2 ma-5"></v-divider>
+      <v-list nav rounded class="pa-5">
         <v-list-item
           v-for="item in items"
           :key="item.title"
@@ -41,7 +86,6 @@ export default {
     showNavbarDrawer: true,
     items: [
       { title: "Home", icon: "mdi-home", route: "/home" },
-      { title: "Discover", icon: "mdi-magnify", route: "/discover" },
       {
         title: "Playlists",
         icon: "mdi-music-box-multiple-outline",
@@ -53,6 +97,36 @@ export default {
         route: "/liked",
       },
     ],
+    audio: null,
+    currentPosition: null,
+    intervalId: null,
   }),
+  created() {
+    this.audio = new Audio(
+      "https://luvmp.com/wp-content/uploads/2021/09/Pop_Smoke_-_Dior_www.luvmp_.com_.mp3"
+    );
+  },
+  computed: {},
+
+  methods: {
+    playSound() {
+      if (this.$store.getters.playState) {
+        this.$store.dispatch("setPlayPauseState", false);
+        this.audio.pause();
+      } else {
+        this.$store.dispatch("setPlayPauseState", true);
+        this.audio.play();
+        this.intervalId = setInterval(() => {
+          this.currentPosition =
+            (100 / this.audio.duration) * this.audio.currentTime.toFixed();
+        }, 100);
+      }
+    },
+    clickProgress(e) {
+      this.isTimerPlaying = true;
+      this.audio.pause();
+      this.updateBar(e.pageX);
+    },
+  },
 };
 </script>
