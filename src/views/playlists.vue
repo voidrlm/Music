@@ -6,12 +6,11 @@
       "
       >Playlists</v-card-title
     >
-    <v-switch v-model="singleExpand" label="Expand Single Item"></v-switch>
     <v-data-iterator
       :items="desserts"
       item-key="name"
       :items-per-page="4"
-      :single-expand="singleExpand"
+      :single-expand="true"
       hide-default-footer
     >
       <template v-slot:default="{ items, isExpanded, expand }">
@@ -81,47 +80,16 @@
 export default {
   name: "playlist-component",
   data: () => ({
-    singleExpand: false,
     desserts: [
       {
-        name: "Frozen Yogurt",
-        calories: 159,
-        fat: 6.0,
-        carbs: 24,
-        protein: 4.0,
-        sodium: 87,
-        calcium: "14%",
+        name: "Playlist 1",
+
         iron: "1%",
       },
       {
-        name: "Ice cream sandwich",
-        calories: 237,
-        fat: 9.0,
-        carbs: 37,
-        protein: 4.3,
-        sodium: 129,
-        calcium: "8%",
+        name: "Playlist 2",
+
         iron: "1%",
-      },
-      {
-        name: "Eclair",
-        calories: 262,
-        fat: 16.0,
-        carbs: 23,
-        protein: 6.0,
-        sodium: 337,
-        calcium: "6%",
-        iron: "7%",
-      },
-      {
-        name: "Cupcake",
-        calories: 305,
-        fat: 3.7,
-        carbs: 67,
-        protein: 4.3,
-        sodium: 413,
-        calcium: "3%",
-        iron: "8%",
       },
     ],
   }),
