@@ -6,7 +6,7 @@
       "
       >Liked</v-card-title
     >
-    <v-card max-width="400" class="mx-auto">
+    <v-card max-width="150">
       <v-container class="pa-1">
         <v-item-group v-model="selected" multiple>
           <v-row>
