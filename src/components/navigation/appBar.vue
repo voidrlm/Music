@@ -1,51 +1,28 @@
 <template>
-  <v-app-bar
-    :color="$vuetify.theme.dark ? '#121212' : '#FFFFFF'"
-    app
-    dense
-    flat
-  >
-    <v-app-bar-nav-icon
-      @click.stop="$emit('openCloseNavBar')"
-    ></v-app-bar-nav-icon>
-
-    <v-spacer></v-spacer>
-    <span
-      @click="showClock = true"
-      v-if="$vuetify.breakpoint.mdAndUp"
-      class="subtitle-1"
-      style="cursor: pointer"
-      >{{ dateTime.hours }}:{{ dateTime.minutes }}{{ " "
-      }}{{ dateTime.ampm }}</span
+  <div>
+    <v-app-bar
+      :color="$vuetify.theme.dark ? '#121212' : '#FFFFFF'"
+      app
+      dense
+      flat
     >
-    <appBarMenu />
-    <div v-if="showClock">
-      <clockDialog
-        :showClock="showClock"
-        :dateTime="dateTime"
-        @hideClock="showClock = false"
-      />
-    </div>
-  </v-app-bar>
+      <v-app-bar-nav-icon
+        @click.stop="$emit('openCloseNavBar')"
+      ></v-app-bar-nav-icon>
+
+      <v-spacer></v-spacer>
+      <appBarMenu />
+    </v-app-bar>
+  </div>
 </template>
 
 <script>
-import clockDialog from "../clock/clockDialog.vue";
 import appBarMenu from "./appBarMenu.vue";
 export default {
   components: {
     appBarMenu,
-    clockDialog,
   },
-  data: () => ({
-    showClock: false,
-    dateTime: {
-      hours: "--",
-      minutes: "--",
-      ampm: "",
-    },
-    timer: undefined,
-  }),
+  data: () => ({}),
   beforeMount() {
     if (localStorage.getItem("darkTheme") !== null) {
       this.$vuetify.theme.dark = JSON.parse(localStorage.getItem("darkTheme"));
@@ -58,21 +35,7 @@ export default {
       this.$vuetify.theme.themes.dark.accent =
         localStorage.getItem("darkAccent");
     }
-    this.timer = setInterval(this.setDateTime, 1000);
   },
-  beforeUnmount() {
-    clearInterval(this.timer);
-  },
-  methods: {
-    setDateTime() {
-      const date = new Date();
-      this.dateTime = {
-        hours: date.getHours() % 12,
-        minutes: (date.getMinutes() < 10 ? "0" : "") + date.getMinutes(),
-        ampm: date.getHours() >= 12 ? "PM" : "AM",
-        date: new Date().toDateString(),
-      };
-    },
-  },
+  methods: {},
 };
 </script>
