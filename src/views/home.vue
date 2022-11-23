@@ -18,7 +18,7 @@
     >
     <v-row dense>
       <v-col cols="12">
-        <v-card color="#385F73" dark>
+        <v-card color="#385F73" class="rounded-xl pa-2">
           <v-card-title class="text-h5"> Unlimited music now </v-card-title>
 
           <v-card-subtitle
@@ -33,7 +33,7 @@
       </v-col>
 
       <v-col v-for="(item, i) in items" :key="i" cols="12">
-        <v-card :color="item.color" dark>
+        <v-card :color="item.color" class="rounded-xl pa-2">
           <div class="d-flex flex-no-wrap justify-space-between">
             <div>
               <v-card-title class="text-h5" v-text="item.title"></v-card-title>
