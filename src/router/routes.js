@@ -12,12 +12,6 @@ const routes = [
     component: () => import("../views/home.vue"),
   },
   {
-    path: "/discover",
-    name: "Discover",
-    meta: { authorized: true },
-    component: () => import("../views/discover.vue"),
-  },
-  {
     path: "/liked",
     name: "Liked",
     meta: { authorized: true },
