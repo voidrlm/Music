@@ -68,8 +68,17 @@
               item.title
             }}</v-list-item-title>
           </v-list-item-content>
-        </v-list-item>
-      </v-list>
+        </v-list-item> </v-list
+      ><template v-slot:append>
+        <div class="px-7">
+          <v-slider
+            :color="$vuetify.theme.dark ? 'white' : 'black'"
+            v-model="volume"
+            prepend-icon="mdi-volume-high"
+            @change="changeVolume"
+          ></v-slider>
+        </div>
+      </template>
     </v-navigation-drawer>
     <app-bar @openCloseNavBar="showNavbarDrawer = !showNavbarDrawer" />
   </nav>
@@ -83,6 +92,7 @@ export default {
   },
 
   data: () => ({
+    volume: 0,
     showNavbarDrawer: true,
     items: [
       { title: "Home", icon: "mdi-home", route: "/home" },
@@ -109,6 +119,9 @@ export default {
   computed: {},
 
   methods: {
+    changeVolume() {
+      this.audio.volume = this.volume / 100;
+    },
     playSound() {
       if (this.$store.getters.playState) {
         this.$store.dispatch("setPlayPauseState", false);
