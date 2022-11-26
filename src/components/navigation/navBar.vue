@@ -126,11 +126,12 @@ export default {
       if (this.$store.getters.playState) {
         this.$store.dispatch("setPlayPauseState", false);
         this.audio.pause();
+        console.log("Pauser");
       } else {
         if (Object.keys(this.$store.getters.nowPlaying).length === 0) {
-          console.log("empty now playing");
           this.$store.dispatch("setNowPlaying", {});
           this.audio = new Audio(this.$store.getters.nowPlaying.url);
+          console.log("Now Playing");
         }
         this.$store.dispatch("setPlayPauseState", true);
         this.audio.play();
@@ -139,11 +140,6 @@ export default {
             (100 / this.audio.duration) * this.audio.currentTime.toFixed();
         }, 100);
       }
-    },
-    clickProgress(e) {
-      this.isTimerPlaying = true;
-      this.audio.pause();
-      this.updateBar(e.pageX);
     },
   },
 };
