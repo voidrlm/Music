@@ -9,24 +9,26 @@
         <v-hover>
           <template v-slot:default="{ hover }">
             <v-avatar size="200" class="ma-5 mb-n2 rounded-xl"
-              ><v-img
-                src="https://upload.wikimedia.org/wikipedia/en/1/13/Pop_Smoke_-_Meet_the_Woo_2.png"
-              >
+              ><v-img :src="$store.getters.nowPlaying.albumArt">
                 <v-fade-transition>
-                  <v-overlay v-if="hover" absolute>
+                  <v-overlay
+                    v-if="
+                      hover ||
+                      Object.keys($store.getters.nowPlaying).length == 0
+                    "
+                    absolute
+                  >
                     <v-card-title class="mt-n6">Now Playing</v-card-title>
-                    <v-card-subtitle>Dior-Pop Smoke</v-card-subtitle>
+                    <v-card-subtitle
+                      >{{ $store.getters.nowPlaying.name }}-{{
+                        $store.getters.nowPlaying.artist
+                      }}</v-card-subtitle
+                    >
                     <div class="mt-1">
                       <v-btn icon class="mr-3"
                         ><v-icon size="35">mdi-skip-previous</v-icon></v-btn
                       >
-                      <v-btn
-                        icon
-                        @click.prevent="
-                          playSound(
-                            'https://luvmp.com/wp-content/uploads/2021/09/Pop_Smoke_-_Dior_www.luvmp_.com_.mp3'
-                          )
-                        "
+                      <v-btn icon @click.prevent="playSound()"
                         ><v-icon size="55">{{
                           $store.getters.playState
                             ? "mdi-pause-circle"
@@ -112,9 +114,7 @@ export default {
     intervalId: null,
   }),
   created() {
-    this.audio = new Audio(
-      "https://luvmp.com/wp-content/uploads/2021/09/Pop_Smoke_-_Dior_www.luvmp_.com_.mp3"
-    );
+    this.audio = new Audio(this.$store.getters.nowPlaying.url);
   },
   computed: {},
 
@@ -127,6 +127,11 @@ export default {
         this.$store.dispatch("setPlayPauseState", false);
         this.audio.pause();
       } else {
+        if (Object.keys(this.$store.getters.nowPlaying).length === 0) {
+          console.log("empty now playing");
+          this.$store.dispatch("setNowPlaying", {});
+          this.audio = new Audio(this.$store.getters.nowPlaying.url);
+        }
         this.$store.dispatch("setPlayPauseState", true);
         this.audio.play();
         this.intervalId = setInterval(() => {
