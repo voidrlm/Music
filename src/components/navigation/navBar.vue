@@ -81,7 +81,13 @@
             step="0.01"
             :max="1"
             :min="0"
-            prepend-icon="mdi-volume-high"
+            :prepend-icon="
+              volume === 0
+                ? 'mdi-volume-off'
+                : volume <= 0.5
+                ? 'mdi-volume-medium'
+                : 'mdi-volume-high'
+            "
             @change="setVolume()"
           ></v-slider>
         </div>
