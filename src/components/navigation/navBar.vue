@@ -18,7 +18,9 @@
                     "
                     absolute
                   >
-                    <v-card-title class="mt-n6">Now Playing</v-card-title>
+                    <v-card-title class="mt-n6 justify-center"
+                      >Now Playing</v-card-title
+                    >
                     <v-card-subtitle
                       >{{ $store.getters.nowPlaying.name }}-{{
                         $store.getters.nowPlaying.artist
@@ -76,8 +78,11 @@
           <v-slider
             :color="$vuetify.theme.dark ? 'white' : 'black'"
             v-model="volume"
+            step="0.01"
+            :max="1"
+            :min="0"
             prepend-icon="mdi-volume-high"
-            @change="changeVolume"
+            @change="setVolume()"
           ></v-slider>
         </div>
       </template>
@@ -89,48 +94,54 @@
 <script>
 import appBar from "./appBar.vue";
 export default {
+  data() {
+    return {
+      volume: Number(this.$cookies.get("volumeSet")),
+      showNavbarDrawer: true,
+      items: [
+        { title: "Home", icon: "mdi-home", route: "/home" },
+        {
+          title: "Playlists",
+          icon: "mdi-music-box-multiple-outline",
+          route: "/playlists",
+        },
+        {
+          title: "Liked",
+          icon: "mdi-heart",
+          route: "/liked",
+        },
+      ],
+      audio: null,
+      currentPosition: null,
+      intervalId: null,
+    };
+  },
   components: {
     appBar,
   },
 
-  data: () => ({
-    volume: 0,
-    showNavbarDrawer: true,
-    items: [
-      { title: "Home", icon: "mdi-home", route: "/home" },
-      {
-        title: "Playlists",
-        icon: "mdi-music-box-multiple-outline",
-        route: "/playlists",
-      },
-      {
-        title: "Liked",
-        icon: "mdi-heart",
-        route: "/liked",
-      },
-    ],
-    audio: null,
-    currentPosition: null,
-    intervalId: null,
-  }),
-  created() {
+  mounted() {
     this.audio = new Audio(this.$store.getters.nowPlaying.url);
+    this.volume = Number(this.$cookies.get("volumeSet"));
+    this.setVolume();
   },
   computed: {},
-
   methods: {
-    changeVolume() {
-      this.audio.volume = this.volume / 100;
+    setVolume() {
+      this.$cookies.set("volumeSet", this.volume);
+      this.audio.volume = this.volume;
     },
     playSound() {
       if (this.$store.getters.playState) {
         this.$store.dispatch("setPlayPauseState", false);
         this.audio.pause();
-        console.log("Pauser");
+        console.log("Pause");
       } else {
+        console.log("Play");
         if (Object.keys(this.$store.getters.nowPlaying).length === 0) {
           this.$store.dispatch("setNowPlaying", {});
           this.audio = new Audio(this.$store.getters.nowPlaying.url);
+          this.audio.volume = this.volume;
           console.log("Now Playing");
         }
         this.$store.dispatch("setPlayPauseState", true);
