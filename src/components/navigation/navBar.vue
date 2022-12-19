@@ -27,7 +27,7 @@
                       }}</v-card-subtitle
                     >
                     <div class="mt-1">
-                      <v-btn icon class="mr-3"
+                      <v-btn icon class="mr-3" @click="playerOperation('prev')"
                         ><v-icon size="35">mdi-skip-previous</v-icon></v-btn
                       >
                       <v-btn icon @click.prevent="playSound()"
@@ -37,7 +37,7 @@
                             : "mdi-play-circle"
                         }}</v-icon></v-btn
                       >
-                      <v-btn icon class="ml-3"
+                      <v-btn icon class="ml-3" @click="playerOperation('next')"
                         ><v-icon size="35">mdi-skip-next</v-icon></v-btn
                       >
                     </div>
@@ -99,10 +99,12 @@
 
 <script>
 import appBar from "./appBar.vue";
+import { musicDatabase } from "../../resources/musicDatabase";
 export default {
   data() {
     return {
-      volume: Number(this.$cookies.get("volumeSet")),
+      musicDatabase,
+      volume: 0,
       showNavbarDrawer: true,
       items: [
         { title: "Home", icon: "mdi-home", route: "/home" },
@@ -117,7 +119,6 @@ export default {
           route: "/liked",
         },
       ],
-      audio: null,
       currentPosition: null,
       intervalId: null,
     };
@@ -127,37 +128,55 @@ export default {
   },
 
   mounted() {
-    this.audio = new Audio(this.$store.getters.nowPlaying.url);
     this.volume = Number(this.$cookies.get("volumeSet"));
+    this.$store.dispatch("initialiseAudioSystem", this.volume);
     this.setVolume();
   },
   computed: {},
   methods: {
     setVolume() {
       this.$cookies.set("volumeSet", this.volume);
-      this.audio.volume = this.volume;
+      this.$store.dispatch("setVolume", this.volume);
     },
     playSound() {
       if (this.$store.getters.playState) {
         this.$store.dispatch("setPlayPauseState", false);
-        this.audio.pause();
-        console.log("Pause");
       } else {
-        console.log("Play");
         if (Object.keys(this.$store.getters.nowPlaying).length === 0) {
           this.$store.dispatch("setNowPlaying", {});
           this.audio = new Audio(this.$store.getters.nowPlaying.url);
-          this.audio.volume = this.volume;
-          console.log("Now Playing");
         }
         this.$store.dispatch("setPlayPauseState", true);
-        this.audio.play();
-        this.intervalId = setInterval(() => {
-          this.currentPosition =
-            (100 / this.audio.duration) * this.audio.currentTime.toFixed();
-        }, 100);
+        // this.intervalId = setInterval(() => {
+        //   this.currentPosition =
+        //     (100 / this.audio.duration) * this.audio.currentTime.toFixed();
+        // }, 100);
       }
     },
+    // playerOperation(parameter) {
+    //   if (Object.keys(this.$store.getters.nowPlaying).length === 0) {
+    //     this.$store.dispatch("setNowPlaying", {});
+    //     this.audio = new Audio(this.$store.getters.nowPlaying.url);
+    //     this.audio.volume = this.volume;
+    //     this.$store.dispatch("setPlayPauseState", true);
+    //     this.audio.play();
+    //     this.intervalId = setInterval(() => {
+    //       this.currentPosition =
+    //         (100 / this.audio.duration) * this.audio.currentTime.toFixed();
+    //     }, 100);
+    //   } else {
+    //     var index = musicDatabase.indexOf(this.$store.getters.nowPlaying);
+    //     console.log(index);
+    //     let action = parameter === "next" ? index + 1 : index - 1;
+    //     console.log("next");
+    //     this.$store.dispatch("setNowPlaying", musicDatabase[action], parameter);
+    //     this.audio.play();
+    //     this.intervalId = setInterval(() => {
+    //       this.currentPosition =
+    //         (100 / this.audio.duration) * this.audio.currentTime.toFixed();
+    //     }, 100);
+    //   }
+    // },
   },
 };
 </script>
