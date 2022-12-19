@@ -10,16 +10,30 @@ const store = new Vuex.Store({
     currentUser: {},
     playState: false,
     nowPlaying: {},
+    audioSystem: null,
+    volume: 0,
   },
   mutations: {
     setCurrentUser(state, currentUser) {
       return (state.currentUser = currentUser);
     },
     setPlayPauseState(state, playState) {
+      if (!playState) {
+        state.audioSystem.pause();
+      } else {
+        state.audioSystem.play();
+      }
       return (state.playState = playState);
     },
     setNowPlaying(state, music) {
       return (state.nowPlaying = music);
+    },
+    setVolume(state, volume) {
+      state.audioSystem.volume = volume;
+      return (state.volume = volume);
+    },
+    initialiseAudioSystem(state) {
+      return (state.audioSystem = new Audio(state.nowPlaying.url));
     },
   },
   actions: {
@@ -31,14 +45,20 @@ const store = new Vuex.Store({
     setPlayPauseState(context, playState) {
       context.commit("setPlayPauseState", playState);
     },
+    setVolume(context, volume) {
+      context.commit("setVolume", volume);
+    },
+    initialiseAudioSystem(context) {
+      context.commit("initialiseAudioSystem");
+    },
     setNowPlaying(context, music) {
       if (Object.keys(music).length === 0) {
-        console.log("empty in store");
         var randomMusic =
           musicDatabase[Math.floor(Math.random() * musicDatabase.length)];
         context.commit("setNowPlaying", randomMusic);
-      } else {
-        context.commit("setNowPlaying", music);
+        context.commit("initialiseAudioSystem");
+        store.dispatch("setPlayPauseState", true);
+        console.log("Random Music Played");
       }
     },
     resetState() {
@@ -49,6 +69,7 @@ const store = new Vuex.Store({
     currentUser: (state) => state.currentUser,
     playState: (state) => state.playState,
     nowPlaying: (state) => state.nowPlaying,
+    volume: (state) => state.volume,
   },
 });
 
